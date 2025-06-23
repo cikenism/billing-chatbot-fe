@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '@/context/auth';
 
 export default function ChatbotPage() {
   const [input, setInput] = useState('');
@@ -10,11 +11,14 @@ export default function ChatbotPage() {
   const [messages, setMessages] = useState<{ from: 'user' | 'bot', text: string }[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const session = useAuth();
+  const user = session?.session?.user.id
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || !selectedTool) return;
 
-    setMessages(prev => [...prev, { from: 'user', text: input }]);
+    setMessages(prev => [...prev, { from: user ? 'user' : 'bot', text: input }]);
     setLoading(true);
 
     try {
